@@ -146,11 +146,13 @@ sd(study1)
 
 # Power
 
-```{r out.height="300px"}
+.center[
+```{r, out.height="300px"}
 hist(study1)
 ```
+]
 
---- 
+---
 
 # Power
 
@@ -250,9 +252,11 @@ Why such different results?
 
 Sampling!!!
 
+.center[
 ```{r, out.height="300px"}
 hist(pop)
 ```
+]
 
 In a population like this, what happens with small samples? 
 
@@ -262,7 +266,7 @@ In a population like this, what happens with small samples?
 
 To see this at scale, do it 10,000 times. $PRE_{crit} = .187$ for $PA - PC = 1$ & $n - PA = 19$
 
-```{r out.height="200px"}
+```{r, out.height="180px"}
 presSmall <- replicate(
   10000,
   {
@@ -272,8 +276,7 @@ presSmall <- replicate(
     return((SSEc - SSEa) / SSEc)
   }
 )
-hist(presSmall)
-abline(v = .187, col = 'red')
+hist(presSmall); abline(v = .187, col = 'red')
 ```
 
 ???
@@ -299,8 +302,7 @@ presBig <- replicate(
     return((SSEc - SSEa) / SSEc)
   }
 )
-hist(presBig)
-abline(v = .038, col = 'red')
+hist(presBig); abline(v = .038, col = 'red')
 ```
 
 ???
@@ -418,6 +420,16 @@ $$f^2 = \frac{\hat{\eta}^2}{1 - \hat{\eta}^2}$$
 library(pwr)
 (eta2 <- 1 - (1 - .1) * (25 / 24))
 (f2 <- eta2 / (1 - eta2))
-pwr.f2.test(u=1, v=24, f2=f2, sig.level=.05)
+pwr.f2.test(u=1, v=24, f2=f2, sig.level=.05) # leaving out `power`
 ```
 
+---
+
+# Calculating Power
+
+We can also do a "sensitivity analysis" for a given sample size. What is the smallest effect we can detect at 80% power, given a certain sample?
+
+```{r}
+pwr.f2.test(u=1, v=24, sig.level=.05, power=.80) 
+# I'm leaving out `f2`
+```

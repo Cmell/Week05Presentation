@@ -165,14 +165,16 @@ sd(study1)
 
 # Power
 
+.center[
 
 ```r
 hist(study1)
 ```
 
 &lt;img src="LabWeek05_V01_files/figure-html/unnamed-chunk-3-1.png" height="300px" /&gt;
+]
 
---- 
+---
 
 # Power
 
@@ -332,12 +334,14 @@ Why such different results?
 
 Sampling!!!
 
+.center[
 
 ```r
 hist(pop)
 ```
 
 &lt;img src="LabWeek05_V01_files/figure-html/unnamed-chunk-10-1.png" height="300px" /&gt;
+]
 
 In a population like this, what happens with small samples? 
 
@@ -358,11 +362,10 @@ presSmall &lt;- replicate(
     return((SSEc - SSEa) / SSEc)
   }
 )
-hist(presSmall)
-abline(v = .187, col = 'red')
+hist(presSmall); abline(v = .187, col = 'red')
 ```
 
-&lt;img src="LabWeek05_V01_files/figure-html/unnamed-chunk-11-1.png" height="200px" /&gt;
+&lt;img src="LabWeek05_V01_files/figure-html/unnamed-chunk-11-1.png" height="180px" /&gt;
 
 ???
 
@@ -393,8 +396,7 @@ presBig &lt;- replicate(
     return((SSEc - SSEa) / SSEc)
   }
 )
-hist(presBig)
-abline(v = .038, col = 'red')
+hist(presBig); abline(v = .038, col = 'red')
 ```
 
 &lt;img src="LabWeek05_V01_files/figure-html/unnamed-chunk-13-1.png" height="200px" /&gt;
@@ -547,7 +549,7 @@ library(pwr)
 ```
 
 ```r
-pwr.f2.test(u=1, v=24, f2=f2, sig.level=.05)
+pwr.f2.test(u=1, v=24, f2=f2, sig.level=.05) # leaving out `power`
 ```
 
 ```
@@ -559,6 +561,32 @@ pwr.f2.test(u=1, v=24, f2=f2, sig.level=.05)
 ##              f2 = 0.06666667
 ##       sig.level = 0.05
 ##           power = 0.2439203
+```
+
+---
+
+# Calculating Power
+
+We can also do a "sensitivity analysis" for a given sample size. What is the smallest effect we can detect at 80% power, given a certain sample?
+
+
+```r
+pwr.f2.test(u=1, v=24, sig.level=.05, power=.80) 
+```
+
+```
+## 
+##      Multiple regression power calculation 
+## 
+##               u = 1
+##               v = 24
+##              f2 = 0.3279748
+##       sig.level = 0.05
+##           power = 0.8
+```
+
+```r
+# I'm leaving out `f2`
 ```
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
