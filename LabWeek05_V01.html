@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Lab Week 05</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Chris Mellinger" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Lab Week 05
+## Onwards and Upwards
+### Chris Mellinger
+### 2019/09/23 (updated: 2019-09-25)
+
+---
+
+
+background-image: url(./graphics/LowAmountOfRodeos.jpg)
+background-size: cover
+
+
+
+---
+
+# Common HW 3 Issues
+
+When you include a difference score in the model, make sure to define it!
+
+`\(PrePostRunDiff_i = RUNPULSE_i - RSTPULSE_i\)`
+
+Note the subscripts: each person gets a (potentially different score)
+
+--
+
+Then, always use your descriptively named variables in models:
+
+MODEL A: `\(PrePostRunDiff_i = \beta_0 + \varepsilon_i\)`
+
+--
+
+You do NOT need extra stuff:
+
+No: `\(PrePostRunDiff_i = Y_i = \beta_0 + \varepsilon_i\)`
+
+--
+
+---
+
+# Common HW 3 Issues
+
+Same with null hypethsis expressions:
+
+Yes: `\(\beta_0 = 0\)`
+
+No: `\(PrePostRunDiff_i = Y_i = 0 = \beta_0\)`
+
+This is not only overwrought, but incorrect. Our null hypothesis is only about **parameter estimates**, not predictions on individual scores.
+
+---
+
+# Common HW 3 Issues
+
+Later on, we will have complex models; extra things just make it hard:
+
+`$$LvlDifQ_i = \beta_0 + \beta_1 * AffC_i + \beta_2 * ExpC_i + \beta_3 * (AffC_i \times ExpC_i) +\\
+\beta_4 * age_i + \varepsilon_i$$`
+
+We want to try and keep things manageable in situations like these.
+
+---
+
+# Power
+
+200 hypotheses! Half are really true, and half are really false.&lt;sup&gt;1&lt;/sup&gt;
+
+&lt;img src="./graphics/AllHyps2.png" height="300px" /&gt;
+
+.footnote[
+[1] We can never really know how many or what proportion of investigated hypotheses are true or false.
+]
+
+---
+
+# Power
+
+`\((1-\beta) = .80\)` &amp; `\(\alpha=.05\)`
+
+&lt;img src="./graphics/P80A052.png" height="300px" /&gt;
+
+---
+
+# Power
+
+`\((1-\beta) = .90\)` &amp; `\(\alpha=.05\)`
+
+&lt;img src="./graphics/P90A052.png" height="300px" /&gt;
+
+---
+
+# Power
+
+Notice, power and alpha refer to *different subsets.*
+
+&lt;img src="./graphics/P90A052.png" height="300px" /&gt;
+
+---
+
+# Power
+
+But why does our HIT RATE (power) change?
+
+--
+
+Simultation time. 
+
+Our population: 1,000,000 runners. Mean heart rate = 65, sd = 10
+
+---
+
+# Power
+
+
+```r
+pop &lt;- rnorm(1000000, mean = 65, sd = 10)
+hist(pop)
+```
+
+&lt;img src="LabWeek05_V01_files/figure-html/unnamed-chunk-1-1.png" height="320px" /&gt;
+
+---
+
+# Power
+
+Research question: do runners in the U.S. have a lower heart rate (HR) than the national average of 72?
+
+Study design: I sample runners and measure their HR.
+
+Money problem: I can only do 20!
+
+Let's try it.
+
+
+```r
+study1 &lt;- sample(pop, 20)
+mean(study1)
+```
+
+```
+## [1] 68.9096
+```
+
+```r
+sd(study1)
+```
+
+```
+## [1] 9.066365
+```
+
+---
+
+# Power
+
+
+```r
+hist(study1)
+```
+
+&lt;img src="LabWeek05_V01_files/figure-html/unnamed-chunk-3-1.png" height="300px" /&gt;
+
+--- 
+
+# Power
+
+Let's do a model comparison.
+
+- Model A: `\(hr_i = \beta_0 + \varepsilon_i\)`
+- Model C: `\(hr_i = 72 + \varepsilon_i\)`
+
+
+```r
+library(lmSupport)
+```
+
+```
+## Warning: package 'lmSupport' was built under R version 3.4.4
+```
+
+```r
+study1_72 &lt;- study1 - 72
+m1.a &lt;- lm(study1_72 ~ 1)
+m1.c &lt;- lm(study1_72 ~ 0)
+```
+
+---
+
+# Power
+
+.pull-left[
+
+```r
+modelSummary(m1.a)
+```
+
+```
+## lm(formula = study1_72 ~ 1)
+## Observations: 20
+## 
+## Linear model fit by least squares
+## 
+## Coefficients:
+##             Estimate     SE      t Pr(&gt;|t|)
+## (Intercept)   -3.090  2.027 -1.524    0.144
+## 
+## Sum of squared errors (SSE): 1561.8, Error df: 19
+## R-squared:  0.0000
+```
+]
+
+.pull-right[
+`$$SSEa = 1561.8$$`
+
+$$SSEc = $$
+]
+---
+
+# Power
+
+.pull-left[
+
+```r
+modelSummary(m1.c)
+```
+
+```
+## lm(formula = study1_72 ~ 0)
+## Observations: 20
+## 
+## Linear model fit by least squares
+## 
+## Coefficients:
+##      Estimate SE t Pr(&gt;|t|)
+## 
+## Sum of squared errors (SSE): 1752.8, Error df: 20
+## R-squared:  0.0000
+```
+]
+
+.pull-right[
+`$$SSEa = 1561.8$$`
+
+`$$SSEc = 1752.8$$`
+]
+
+---
+
+# Power
+
+.pull-left[
+`$$PRE = \frac{1752.8 - 1561.8}{1752.8} = .109$$`
+]
+
+.pull-right[
+`$$SSEa = 1561.8$$`
+
+`$$SSEc = 1752.8$$`
+]
+
+---
+
+# Power
+
+Do it again! I'm taking shortcuts this time.
+
+
+```r
+study2 &lt;- sample(pop, 20); study2_72 &lt;- study2 - 72
+m2.a &lt;- lm(study2_72 ~ 1); m2.c &lt;- lm(study2_72 ~ 0)
+modelCompare(m2.c, m2.a)
+```
+
+```
+## SSE (Compact) =  3462.661 
+## SSE (Augmented) =  2591.554 
+## Delta R-Squared =  0 
+## Partial Eta-Squared (PRE) =  0.2515716 
+## F(1,19) = 6.38653, p = 0.02052867
+```
+
+---
+
+# Power
+
+How different are these?!
+
+.pull-left[
+
+```r
+modelCompare(m1.c, m1.a)
+```
+
+SSE (Compact) =  1752.793 
+SSE (Augmented) =  1561.781 
+Delta R-Squared =  0 
+Partial Eta-Squared (PRE) =  0.1089758 
+F(1,19) = 2.323775, p = 0.1438832
+]
+
+.pull-right[
+
+```r
+modelCompare(m2.c, m2.a)
+```
+
+SSE (Compact) =  3462.661 
+SSE (Augmented) =  2591.554 
+Delta R-Squared =  0 
+Partial Eta-Squared (PRE) =  0.2515716 
+F(1,19) = 6.38653, p = 0.02052867
+
+]
+
+Why such different results?
+
+---
+
+# Power
+
+Sampling!!!
+
+
+```r
+hist(pop)
+```
+
+&lt;img src="LabWeek05_V01_files/figure-html/unnamed-chunk-10-1.png" height="300px" /&gt;
+
+In a population like this, what happens with small samples? 
+
+---
+
+# Power
+
+To see this at scale, do it 10,000 times. `\(PRE_{crit} = .187\)` for `\(PA - PC = 1\)` &amp; `\(n - PA = 19\)`
+
+
+```r
+presSmall &lt;- replicate(
+  10000,
+  {
+    sam &lt;- sample(pop, 25)
+    SSEa &lt;- sum((sam - mean(sam))^2); 
+    SSEc &lt;- sum((sam - 72)^2)
+    return((SSEc - SSEa) / SSEc)
+  }
+)
+hist(presSmall)
+abline(v = .187, col = 'red')
+```
+
+&lt;img src="LabWeek05_V01_files/figure-html/unnamed-chunk-11-1.png" height="200px" /&gt;
+
+???
+
+
+```r
+mean(presSmall &gt;.187)
+```
+
+```
+## [1] 0.8696
+```
+
+
+---
+
+# Power
+
+Do it 10,000 times *with a larger sample*. Now, `\(PRE_{crit} = .038\)`
+
+
+```r
+presBig &lt;- replicate(
+  10000,
+  {
+*    sam &lt;- sample(pop, 100)
+    SSEa &lt;- sum((sam - mean(sam))^2); 
+    SSEc &lt;- sum((sam - 72)^2)
+    return((SSEc - SSEa) / SSEc)
+  }
+)
+hist(presBig)
+abline(v = .038, col = 'red')
+```
+
+&lt;img src="LabWeek05_V01_files/figure-html/unnamed-chunk-13-1.png" height="200px" /&gt;
+
+???
+
+
+```r
+mean(presSmall &gt;.038)
+```
+
+```
+## [1] 0.9952
+```
+
+---
+
+# Power
+
+.pull-left[
+
+```r
+hist(presSmall, xlim = c(0, 1.0))
+abline(v = .151, col = 'red')
+```
+
+&lt;img src="LabWeek05_V01_files/figure-html/unnamed-chunk-15-1.png" width="350px" height="320px" /&gt;
+
+]
+
+.pull-right[
+
+```r
+hist(presBig, xlim = c(0, 1))
+abline(v = .038, col = 'red')
+```
+
+&lt;img src="LabWeek05_V01_files/figure-html/unnamed-chunk-16-1.png" width="350px" height="320px" /&gt;
+
+]
+
+
+---
+
+# Power
+
+Let's do this again with the big sample size, but change the **effect size** (still a big sample).
+
+Changing effect size can be done by using a null that is *really* inconsistent with my population's data. Why? Which numbers change in PRE's calculation?
+
+`$$PRE = \frac{SSEc - SSEa}{SSEc}$$`
+
+--
+
+Importantly, what other ways can we make PRE bigger?
+
+--
+
+Anything that reduces **error** in Model A as compared to Model C:
+
+- Improve measurement technique
+- Choose big differences to study
+- Use covariates to reduce the amount of unexplained variance in Model A (we'll talk about this one more later)
+
+---
+
+# Power
+
+
+```r
+presBigEffect &lt;- replicate(
+  10000,
+  {
+    sam &lt;- sample(pop, 100)
+    SSEa &lt;- sum((sam - mean(sam))^2); 
+*    SSEc &lt;- sum((sam - 85)^2)
+    return((SSEc - SSEa) / SSEc)
+  }
+)
+```
+
+
+---
+
+# Power
+
+.pull-left[
+
+```r
+hist(presBig, xlim = c(0, 1.0))
+abline(v = .038, col = 'red')
+```
+
+&lt;img src="LabWeek05_V01_files/figure-html/unnamed-chunk-18-1.png" width="350px" height="320px" /&gt;
+
+]
+
+.pull-right[
+
+```r
+hist(presBigEffect, xlim = c(0, 1))
+abline(v = .038, col = 'red')
+```
+
+&lt;img src="LabWeek05_V01_files/figure-html/unnamed-chunk-19-1.png" width="350px" height="320px" /&gt;
+
+]
+
+---
+
+# Power
+
+Remember, in our population (we made it at the beginning), the alternative is true! The average HR was lower than 72.
+
+Josh's app does this for both the alternative and the null.
+
+(https://correll.shinyapps.io/power/)
+
+
+---
+
+# Calculating Power
+
+It's really easy, but you'll need these formulas:
+
+`$$\hat{\eta}^2 = 1 - (1 - PRE) \frac{n - PC}{n - PA}$$`
+
+`$$f^2 = \frac{\hat{\eta}^2}{1 - \hat{\eta}^2}$$`
+
+---
+
+# Calculating Power
+
+
+```r
+library(pwr)
+(eta2 &lt;- 1 - (1 - .1) * (25 / 24))
+```
+
+```
+## [1] 0.0625
+```
+
+```r
+(f2 &lt;- eta2 / (1 - eta2))
+```
+
+```
+## [1] 0.06666667
+```
+
+```r
+pwr.f2.test(u=1, v=24, f2=f2, sig.level=.05)
+```
+
+```
+## 
+##      Multiple regression power calculation 
+## 
+##               u = 1
+##               v = 24
+##              f2 = 0.06666667
+##       sig.level = 0.05
+##           power = 0.2439203
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
