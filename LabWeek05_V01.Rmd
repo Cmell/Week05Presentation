@@ -73,7 +73,9 @@ We want to try and keep things manageable in situations like these.
 
 200 hypotheses! Half are really true, and half are really false.<sup>1</sup>
 
-<img src="./graphics/AllHyps2.png" height="300px" />
+<img src="./graphics/AllHyps2.png" height="280px" />
+
+Each box is a hypothesis. The solid blue boxes are true in reality, and the open (white) boxes are false in reality.
 
 .footnote[
 [1] We can never really know how many or what proportion of investigated hypotheses are true or false.
@@ -85,7 +87,13 @@ We want to try and keep things manageable in situations like these.
 
 $(1-\beta) = .80$ & $\alpha=.05$
 
-<img src="./graphics/P80A052.png" height="300px" />
+<img src="./graphics/P80A052.png" height="280px" />
+
+Boxes outlined in green are ones that our studies identified as "true." Boxes outlined in red we failed to find evidence for. Thus:
+- Solid blue boxes outlined in green are HITs.
+- Solid blue boxes outlined in red are MISSes.
+- White boxes outlined in green are FALSE ALARMS.
+- White boxes outlined in red indicate we were CORRECTLY QUIET.
 
 ---
 
@@ -93,7 +101,7 @@ $(1-\beta) = .80$ & $\alpha=.05$
 
 $(1-\beta) = .90$ & $\alpha=.05$
 
-<img src="./graphics/P90A052.png" height="300px" />
+<img src="./graphics/P90A052.png" height="280px" />
 
 ---
 
@@ -101,7 +109,7 @@ $(1-\beta) = .90$ & $\alpha=.05$
 
 Notice, power and alpha refer to *different subsets.*
 
-<img src="./graphics/P90A052.png" height="300px" />
+<img src="./graphics/P90A052.png" height="280px" />
 
 ---
 
